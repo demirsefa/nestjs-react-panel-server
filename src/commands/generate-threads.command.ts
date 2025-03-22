@@ -10,7 +10,7 @@ import { BadRequestException } from '@nestjs/common';
 
 @Command({
   name: 'generate:threads',
-  description: 'Generate 1000 threads with random messages'
+  description: 'Generate 1000 threads with random messages',
 })
 export class GenerateThreadsCommand extends CommandRunner {
   constructor(
@@ -32,10 +32,14 @@ export class GenerateThreadsCommand extends CommandRunner {
     const adminsCount = await this.adminRepository.count();
 
     if (usersCount === 0) {
-      throw new BadRequestException('No users found. Please run generate:users first');
+      throw new BadRequestException(
+        'No users found. Please run generate:users first',
+      );
     }
     if (adminsCount === 0) {
-      throw new BadRequestException('No admins found. Please run generate:admins first');
+      throw new BadRequestException(
+        'No admins found. Please run generate:admins first',
+      );
     }
 
     // Get all users and admins for random assignment
@@ -73,10 +77,12 @@ export class GenerateThreadsCommand extends CommandRunner {
           }
 
           return thread;
-        })
+        }),
       );
 
-      console.log(`Created threads ${i * batchSize + 1} to ${(i + 1) * batchSize}`);
+      console.log(
+        `Created threads ${i * batchSize + 1} to ${(i + 1) * batchSize}`,
+      );
     }
 
     console.log('Finished creating 1000 threads with random messages');

@@ -27,7 +27,10 @@ export class AdminService {
     return this.adminRepository.save(admin);
   }
 
-  async update(id: string, adminData: Partial<AdminEntity>): Promise<AdminEntity> {
+  async update(
+    id: string,
+    adminData: Partial<AdminEntity>,
+  ): Promise<AdminEntity> {
     await this.adminRepository.update(id, adminData);
     return this.findOne(id);
   }

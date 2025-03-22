@@ -5,4 +5,4 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(CommandsModule);
   await app.close();
 }
-bootstrap(); 
+bootstrap();

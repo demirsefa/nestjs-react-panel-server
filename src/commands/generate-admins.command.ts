@@ -7,7 +7,7 @@ import { faker } from '@faker-js/faker';
 
 @Command({
   name: 'generate:admins',
-  description: 'Generate fake admins'
+  description: 'Generate fake admins',
 })
 export class GenerateAdminsCommand extends CommandRunner {
   constructor(

@@ -1,5 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { IsEmail, IsEnum, IsString, MinLength, IsBoolean } from 'class-validator';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import {
+  IsEmail,
+  IsEnum,
+  IsString,
+  MinLength,
+  IsBoolean,
+} from 'class-validator';
 
 @Entity('admins')
 export class AdminEntity {
@@ -15,7 +27,7 @@ export class AdminEntity {
   @IsEmail()
   email: string;
 
-  @Column()
+  @Column({ select: false })
   @IsString()
   @MinLength(6)
   password: string;
@@ -23,7 +35,7 @@ export class AdminEntity {
   @Column({
     type: 'enum',
     enum: ['super-admin', 'admin'],
-    default: 'admin'
+    default: 'admin',
   })
   @IsEnum(['super-admin', 'admin'])
   role: string;

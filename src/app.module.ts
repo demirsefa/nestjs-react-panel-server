@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminModule } from './modules/admins/admin.module';
 import { UserModule } from './modules/users/user.module';
 import { ThreadModule } from './modules/threads/thread.module';
-import { GenerateAdminsCommand } from './commands/generate-admins.command';
 import { databaseConfig } from './config/database.config';
 
 @Module({

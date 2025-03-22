@@ -1,11 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from 'typeorm';
-import { IsString, MinLength, IsBoolean, ValidateNested } from 'class-validator';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
+import {
+  IsString,
+  MinLength,
+  IsBoolean,
+  ValidateNested,
+} from 'class-validator';
 import { MessageEntity } from './message.entity';
 import { AdminEntity } from '../../admins/entities/admin.entity';
 import { UserEntity } from '../../users/entities/user.entity';
+import { BaseEntity } from '../../../entities/base.entity';
 
 @Entity('threads')
-export class ThreadEntity {
+export class ThreadEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -31,7 +45,7 @@ export class ThreadEntity {
   @ValidateNested()
   approvedBy: AdminEntity;
 
-  @OneToMany(() => MessageEntity, message => message.thread)
+  @OneToMany(() => MessageEntity, (message) => message.thread)
   @ValidateNested({ each: true })
   messages: MessageEntity[];
 
