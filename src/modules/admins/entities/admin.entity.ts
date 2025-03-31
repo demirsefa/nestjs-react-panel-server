@@ -12,9 +12,10 @@ import {
   MinLength,
   IsBoolean,
 } from 'class-validator';
+import { BaseEntity } from '../../../entities/base.entity';
 
 @Entity('admins')
-export class AdminEntity {
+export class AdminEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

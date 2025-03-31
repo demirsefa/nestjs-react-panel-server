@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { AdminEntity } from '../modules/admins/entities/admin.entity';
 import * as bcrypt from 'bcrypt';
 import { faker } from '@faker-js/faker';
+import { ConfigService } from '@nestjs/config';
 
 @Command({
   name: 'generate:admins',
@@ -13,16 +14,22 @@ export class GenerateAdminsCommand extends CommandRunner {
   constructor(
     @InjectRepository(AdminEntity)
     private readonly adminRepository: Repository<AdminEntity>,
+    private readonly configService: ConfigService,
   ) {
     super();
   }
 
   async run() {
+    const jwtSecret = this.configService.get('JWT_SECRET');
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET environment variable is not set');
+    }
+
     // Create main admin
     const mainAdmin = this.adminRepository.create({
       username: 'admin',
       email: 'admin@example.com',
-      password: await bcrypt.hash('admin', 10),
+      password: await bcrypt.hash(jwtSecret, 10),
       role: 'super-admin',
       isActive: true,
     });
@@ -34,7 +41,7 @@ export class GenerateAdminsCommand extends CommandRunner {
     const fakeAdmins = Array.from({ length: 10 }, () => ({
       username: faker.internet.userName(),
       email: faker.internet.email(),
-      password: bcrypt.hashSync('password123', 10),
+      password: bcrypt.hashSync(jwtSecret, 10),
       role: 'admin',
       isActive: true,
     }));

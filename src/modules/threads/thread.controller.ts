@@ -1,8 +1,10 @@
-import { Controller, Put, Body, Param } from '@nestjs/common';
+import { Controller, Put, Body, Param, UseGuards } from '@nestjs/common';
 import { ThreadService } from './thread.service';
 import { ThreadEntity } from './entities/thread.entity';
 import { BaseController } from '../../controllers/base.controller';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('threads')
 export class ThreadController extends BaseController<ThreadEntity> {
   constructor(private readonly threadService: ThreadService) {

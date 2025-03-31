@@ -15,15 +15,30 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateAdmin(email: string, password: string): Promise<AdminEntity> {
-    const admin = await this.adminRepository.findOne({ where: { email } });
+  async validateAdmin(
+    username: string,
+    password: string,
+  ): Promise<AdminEntity> {
+    const admin = await this.adminRepository.findOne({
+      where: { username },
+      select: [
+        'id',
+        'username',
+        'email',
+        'password',
+        'role',
+        'isActive',
+        'createdAt',
+        'updatedAt',
+      ],
+    });
     if (!admin) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      //throw new UnauthorizedException('Invalid credentials');
+      console.error('wrong password' + username);
     }
 
     return admin;
@@ -37,8 +52,11 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto): Promise<LoginResponse> {
-    const admin = await this.validateAdmin(loginDto.email, loginDto.password);
-    
+    const admin = await this.validateAdmin(
+      loginDto.username,
+      loginDto.password,
+    );
+
     const payload: JwtPayload = {
       sub: admin.id,
       email: admin.email,

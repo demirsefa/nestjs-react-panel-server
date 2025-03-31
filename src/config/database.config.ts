@@ -13,4 +13,3 @@ export const databaseConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: process.env.NODE_ENV !== 'production',
 };
-console.log('databaseConfig', databaseConfig);
