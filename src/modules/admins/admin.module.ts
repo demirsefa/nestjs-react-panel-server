@@ -6,10 +6,7 @@ import { AdminController } from './admin.controller';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AdminEntity]),
-    AuthModule
-  ],
+  imports: [TypeOrmModule.forFeature([AdminEntity]), AuthModule],
   providers: [AdminService],
   controllers: [AdminController],
   exports: [AdminService],
