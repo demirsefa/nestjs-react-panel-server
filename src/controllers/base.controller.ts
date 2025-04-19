@@ -20,13 +20,15 @@ export class BaseController<T extends BaseEntity> {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    const skip = (page - 1) * limit;
+    const skip = page * limit;
     return this.baseService.findAll({ skip, limit });
   }
 
   @Get(':id')
-  async getOne(@Param('id') id: number): Promise<T> {
+  async getOne(@Param('id') id: string | number): Promise<T> {
+    console.log('id', id);
     const item = await this.baseService.findOne(id);
+    console.log('xxxx', !!item);
     if (item === null) {
       throw new NotFoundException('Not Found');
     }
@@ -40,7 +42,7 @@ export class BaseController<T extends BaseEntity> {
 
   @Put(':id')
   async update(
-    @Param('id') id: number,
+    @Param('id') id: string | number,
     @Body() data: DeepPartial<T>,
   ): Promise<T> {
     return this.baseService.update(id, data);

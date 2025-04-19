@@ -8,4 +8,7 @@ export class Asset extends BaseEntity {
 
   @Column()
   filename: string;
-} 
+
+  @Column({ nullable: true })
+  url: string;
+}

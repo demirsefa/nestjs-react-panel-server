@@ -19,13 +19,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { DeepPartial } from 'typeorm';
 
 @Controller('assets')
+@UseGuards(JwtAuthGuard)
 export class AssetsController extends BaseController<Asset> {
   constructor(private readonly assetsService: AssetsService) {
     super(assetsService);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('upload')
+  @Post()
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -51,8 +51,7 @@ export class AssetsController extends BaseController<Asset> {
     return this.assetsService.createAssets(file, data);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Put(':id/upload')
+  @Put(':id')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -68,6 +67,9 @@ export class AssetsController extends BaseController<Asset> {
           return cb(new Error('Only image files are allowed!'), false);
         }
         cb(null, true);
+      },
+      limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB limit
       },
     }),
   )
