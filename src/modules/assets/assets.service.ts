@@ -18,6 +18,7 @@ export class AssetsService extends BaseService<Asset> {
     file: Express.Multer.File,
     data: DeepPartial<Asset>,
   ): Promise<Asset> {
+    console.log(file);
     const filename = file.filename;
     const url = `/uploads/${filename}`;
     return super.create({

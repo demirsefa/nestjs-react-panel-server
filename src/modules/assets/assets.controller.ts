@@ -7,6 +7,7 @@ import {
   Body,
   Put,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AssetsService } from './assets.service';
@@ -14,9 +15,10 @@ import { Asset } from './assets.entity';
 import { BaseController } from '../../controllers/base.controller';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { extname, join } from 'path';
+import { format } from 'date-fns';
 import { DeepPartial } from 'typeorm';
+import * as fs from 'fs';
 
 @Controller('assets')
 @UseGuards(JwtAuthGuard)
@@ -31,12 +33,14 @@ export class AssetsController extends BaseController<Asset> {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, cb) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          const filename = `${uuidv4()}${extname(file.originalname)}`;
+          console.log(file);
+          const timestamp = format(new Date(), 'yyyy.MM.dd.HH.mm');
+          const filename = `${timestamp}${extname(file.originalname)}`;
           cb(null, filename);
         },
       }),
       fileFilter: (req, file, cb) => {
+        console.log(file);
         if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
           return cb(new Error('Only image files are allowed!'), false);
         }
@@ -57,8 +61,8 @@ export class AssetsController extends BaseController<Asset> {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, cb) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          const filename = `${uuidv4()}${extname(file.originalname)}`;
+          const timestamp = format(new Date(), 'yyyy.MM.dd.HH.mm');
+          const filename = `${timestamp}${extname(file.originalname)}`;
           cb(null, filename);
         },
       }),
@@ -79,5 +83,23 @@ export class AssetsController extends BaseController<Asset> {
     @Body() data: DeepPartial<Asset>,
   ): Promise<Asset> {
     return this.assetsService.updateAssets(id, file, data);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<void> {
+    // Get the asset details before deletion
+    const asset = await this.assetsService.findOne(id);
+    if (asset && asset.filename) {
+      // Construct the full path to the file
+      const filePath = join(process.cwd(), 'uploads', asset.filename);
+      
+      // Delete the physical file if it exists
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+    
+    // Delete the database record
+    await this.assetsService.delete(id);
   }
 }

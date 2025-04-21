@@ -6,6 +6,8 @@ import { ThreadModule } from './modules/threads/thread.module';
 import { databaseConfig } from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { AssetsModule } from './modules/assets/assets.module';
+import { LocalizationModule } from './modules/localization/localization.module';
+import { LanguageModule } from './modules/languages/language.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { AssetsModule } from './modules/assets/assets.module';
     UserModule,
     ThreadModule,
     AssetsModule,
+    LocalizationModule,
+    LanguageModule,
   ],
   providers: [],
 })

@@ -18,7 +18,14 @@ export class BaseService<T extends BaseEntity> {
   }
 
   async findOne(id: string | number): Promise<T | null> {
-    return this.repository.findOneBy({ id } as any); // "id" assumes that the primary column is `id`
+    const metadata = this.repository.metadata;
+    const primaryColumn = metadata.primaryColumns[0];
+    if (!primaryColumn) {
+      throw new Error('Entity has no primary column defined');
+    }
+    return this.repository.findOneBy({
+      [primaryColumn.propertyName]: id,
+    } as any);
   }
 
   async create(data: DeepPartial<T>): Promise<T> {
@@ -38,7 +45,14 @@ export class BaseService<T extends BaseEntity> {
     return this.repository.save(updatedEntity); // Save merged entity
   }
 
-  async delete(id: number): Promise<void> {
-    await this.repository.delete(id);
+  async delete(id: number | string): Promise<void> {
+    const metadata = this.repository.metadata;
+    const primaryColumn = metadata.primaryColumns[0];
+    if (!primaryColumn) {
+      throw new Error('Entity has no primary column defined');
+    }
+     this.repository.delete({
+      [primaryColumn.propertyName]: id,
+    } as any);
   }
 }
