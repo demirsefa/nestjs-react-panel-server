@@ -52,7 +52,7 @@ export class BaseService<T extends BaseEntity> {
     if (!primaryColumn) {
       throw new Error('Entity has no primary column defined');
     }
-     this.repository.delete({
+     this.repository.softDelete({
       [primaryColumn.propertyName]: id,
     } as any);
   }

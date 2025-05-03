@@ -4,6 +4,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import {
   IsEmail,
@@ -12,7 +14,9 @@ import {
   MinLength,
   IsBoolean,
 } from 'class-validator';
+import { Localization } from 'src/modules/localization/entities/localization.entity';
 import { BaseEntity } from '../../../entities/base.entity';
+import { Asset } from 'src/modules/assets/assets.entity';
 
 @Entity('admins')
 export class AdminEntity extends BaseEntity {
@@ -44,6 +48,17 @@ export class AdminEntity extends BaseEntity {
   @Column({ default: true })
   @IsBoolean()
   isActive: boolean;
+
+
+  @Column({ nullable: true })
+  assetId: number;
+
+  @OneToOne(() => Asset, {
+    cascade: true,
+  })
+  @JoinColumn({ name: 'assetId', referencedColumnName: 'id' })
+  asset: Asset;
+
 
   @CreateDateColumn()
   createdAt: Date;
