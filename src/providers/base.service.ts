@@ -23,10 +23,11 @@ export class BaseService<T extends BaseEntity> {
     if (!primaryColumn) {
       throw new Error('Entity has no primary column defined');
     }
+    console.log("primaryColumn.propertyName",primaryColumn.propertyName,id);
     return this.repository.findOneBy({
       [primaryColumn.propertyName]: id,
     } as any);
-  }
+  } 
 
   async create(data: DeepPartial<T>): Promise<T> {
     const entity = this.repository.create(data);

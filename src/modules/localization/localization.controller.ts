@@ -20,15 +20,4 @@ export class LocalizationController extends BaseController<Localization> {
     const skip = (page - 1) * limit;
     return this.localizationService.findAll({ skip, limit, language });
   }
-
-
-  @Get('language')
-  findByLanguage(@Query('language') language: string) {
-    return this.localizationService.findByLanguage(language);
-  }
-
-  @Get('key')
-  findByKey(@Query('key') key: string) {
-    return this.localizationService.findByKey(key);
-  }
 } 
