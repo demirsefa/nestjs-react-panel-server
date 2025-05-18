@@ -14,9 +14,8 @@ import {
   MinLength,
   IsBoolean,
 } from 'class-validator';
-import { Localization } from 'src/modules/localization/entities/localization.entity';
 import { BaseEntity } from '../../../entities/base.entity';
-import { Asset } from 'src/modules/assets/assets.entity';
+import { AssetEntity } from '../../../modules/assets/assets.entity';
 
 @Entity('admins')
 export class AdminEntity extends BaseEntity {
@@ -49,16 +48,14 @@ export class AdminEntity extends BaseEntity {
   @IsBoolean()
   isActive: boolean;
 
-
   @Column({ nullable: true })
   assetId: number;
 
-  @OneToOne(() => Asset, {
+  @OneToOne(() => AssetEntity, {
     cascade: true,
   })
   @JoinColumn({ name: 'assetId', referencedColumnName: 'id' })
-  asset: Asset;
-
+  asset: AssetEntity;
 
   @CreateDateColumn()
   createdAt: Date;

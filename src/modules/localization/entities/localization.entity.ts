@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn, OneToMany, AfterLoad, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn, OneToMany, AfterLoad } from 'typeorm';
 import { BaseEntity } from '../../../entities/base.entity';
 import { Translation } from './Translation.entity';
 
@@ -21,9 +21,7 @@ export class Localization extends BaseEntity {
 
   @AfterLoad()
   setFirstTranslation() {
-    this.text = this.translations?.[0]?.text ?? "";
-    this.language = this.translations?.[0]?.language ?? "";
+    this.text = this.translations?.[0]?.text ?? '';
+    this.language = this.translations?.[0]?.language ?? '';
   }
 }
-
-

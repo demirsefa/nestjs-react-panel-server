@@ -2,7 +2,6 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 
 config();
-
 export const databaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -12,4 +11,8 @@ export const databaseConfig: TypeOrmModuleOptions = {
   database: process.env.DB_DATABASE,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: process.env.NODE_ENV !== 'production',
+  toRetry: (err) => {
+    console.error('Database connection failed:', err);
+    return true;
+  },
 };

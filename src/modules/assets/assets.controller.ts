@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AssetsService } from './assets.service';
-import { Asset } from './assets.entity';
+import { AssetEntity } from './assets.entity';
 import { BaseController } from '../../controllers/base.controller';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { diskStorage } from 'multer';
@@ -22,7 +22,7 @@ import * as fs from 'fs';
 
 @Controller('assets')
 @UseGuards(JwtAuthGuard)
-export class AssetsController extends BaseController<Asset> {
+export class AssetsController extends BaseController<AssetEntity> {
   constructor(private readonly assetsService: AssetsService) {
     super(assetsService);
   }
@@ -50,8 +50,8 @@ export class AssetsController extends BaseController<Asset> {
   )
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Body() data: DeepPartial<Asset>,
-  ): Promise<Asset> {
+    @Body() data: DeepPartial<AssetEntity>,
+  ): Promise<AssetEntity> {
     return this.assetsService.createAssets(file, data);
   }
 
@@ -80,8 +80,8 @@ export class AssetsController extends BaseController<Asset> {
   async updateFile(
     @Param('id') id: number,
     @UploadedFile() file: Express.Multer.File,
-    @Body() data: DeepPartial<Asset>,
-  ): Promise<Asset> {
+    @Body() data: DeepPartial<AssetEntity>,
+  ): Promise<AssetEntity> {
     return this.assetsService.updateAssets(id, file, data);
   }
 
@@ -92,13 +92,13 @@ export class AssetsController extends BaseController<Asset> {
     if (asset && asset.filename) {
       // Construct the full path to the file
       const filePath = join(process.cwd(), 'uploads', asset.filename);
-      
+
       // Delete the physical file if it exists
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
     }
-    
+
     // Delete the database record
     await this.assetsService.delete(id);
   }

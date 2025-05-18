@@ -20,7 +20,7 @@ export class GenerateAdminsCommand extends CommandRunner {
   }
 
   async run() {
-    const jwtSecret = this.configService.get('JWT_SECRET');
+    const jwtSecret = this.configService.get('JWT_SECRET') as string;
     if (!jwtSecret) {
       throw new Error('JWT_SECRET environment variable is not set');
     }

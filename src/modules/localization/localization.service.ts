@@ -11,12 +11,20 @@ export class LocalizationService extends BaseService<Localization> {
     @InjectRepository(Localization)
     private readonly localizationRepository: Repository<Localization>,
     @InjectRepository(Translation)
-    private readonly translationRepository: Repository<Translation>, 
- ) {
+    private readonly translationRepository: Repository<Translation>,
+  ) {
     super(localizationRepository);
   }
 
-  async findAll({ skip, limit ,language}: { skip: number; limit: number,language: string }) {
+  async findAll({
+    skip,
+    limit,
+    language,
+  }: {
+    skip: number;
+    limit: number;
+    language: string;
+  }) {
     const res = await this.localizationRepository.findAndCount({
       skip,
       take: limit,
@@ -38,18 +46,20 @@ export class LocalizationService extends BaseService<Localization> {
 
   async findByLanguage(language: string): Promise<Localization[]> {
     console.log(language);
-    return (await this.localizationRepository
-      .createQueryBuilder('localization')
-      .leftJoinAndSelect(
-        'localization.translations',
-        'translation',
-        'translation.language = :language',
-        { language }
-      )
-      .getMany()).map(item=>{
-        item.language = item.language || language;
-        return item;
-      });
+    return (
+      await this.localizationRepository
+        .createQueryBuilder('localization')
+        .leftJoinAndSelect(
+          'localization.translations',
+          'translation',
+          'translation.language = :language',
+          { language },
+        )
+        .getMany()
+    ).map((item) => {
+      item.language = item.language || language;
+      return item;
+    });
   }
 
   async findByKey(key: string): Promise<Localization[]> {
@@ -57,23 +67,32 @@ export class LocalizationService extends BaseService<Localization> {
   }
 
   async updateByKey(keys: Localization[]): Promise<Localization[]> {
-    keys.forEach(async (key) => {
+    for (const key of keys) {
       //sıfırlamamsı için
       delete key.translations;
-       await this.localizationRepository.save(key);
-      const translation = await this.translationRepository.findOne({ where: { localization: { id: key.id }, language: key.language } });
-      console.log("translation",translation);
+      await this.localizationRepository.save(key);
+      const translation = await this.translationRepository.findOne({
+        where: { localization: { id: key.id }, language: key.language },
+      });
       if (translation) {
-        await this.translationRepository.update(translation.id, { ...translation, text: key.text });
+        const updatedVersion = this.translationRepository.create({
+          ...translation,
+          text: key.text,
+        });
+        await this.translationRepository.save({
+          ...updatedVersion,
+          clientVersion: updatedVersion.clientVersion,
+        });
       } else {
-       const res= this.translationRepository.create({
+        const res = this.translationRepository.create({
           text: key.text,
           language: key.language,
           localizationId: key.id,
+          clientVersion: 1,
         });
         await this.translationRepository.save(res);
       }
-    });
+    }
     return keys;
   }
-} 
+}

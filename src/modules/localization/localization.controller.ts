@@ -15,9 +15,9 @@ export class LocalizationController extends BaseController<Localization> {
   async getAllFiltered(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
-    @Query('language') language: string="tr",
+    @Query('language') language: string = 'tr',
   ) {
     const skip = (page - 1) * limit;
     return this.localizationService.findAll({ skip, limit, language });
   }
-} 
+}

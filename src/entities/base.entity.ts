@@ -24,12 +24,16 @@ export class BaseEntity extends _BaseEntity {
   version: number;
 
   @IsNotEmpty()
-  clientVersion: number; // To hold the version from the client
+  clientVersion?: number; // To hold the version from the client
 
   @BeforeUpdate()
   validateVersion() {
+    console.log('this.version', this.version, this.clientVersion);
     if (this.version !== this.clientVersion) {
       throw new BadRequestException('Version mismatch: Data is outdated');
+    }
+    if (this.clientVersion) {
+      delete this.clientVersion;
     }
   }
 

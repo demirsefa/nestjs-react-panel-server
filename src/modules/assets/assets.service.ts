@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Asset } from './assets.entity';
+import { AssetEntity } from './assets.entity';
 import { BaseService } from '../../providers/base.service';
 import { DeepPartial } from 'typeorm';
 
 @Injectable()
-export class AssetsService extends BaseService<Asset> {
+export class AssetsService extends BaseService<AssetEntity> {
   constructor(
-    @InjectRepository(Asset)
-    private readonly assetRepository: Repository<Asset>,
+    @InjectRepository(AssetEntity)
+    private readonly assetRepository: Repository<AssetEntity>,
   ) {
     super(assetRepository);
   }
 
   async createAssets(
     file: Express.Multer.File,
-    data: DeepPartial<Asset>,
-  ): Promise<Asset> {
+    data: DeepPartial<AssetEntity>,
+  ): Promise<AssetEntity> {
     console.log(file);
     const filename = file.filename;
     const url = `/uploads/${filename}`;
@@ -31,8 +31,8 @@ export class AssetsService extends BaseService<Asset> {
   async updateAssets(
     id: number,
     file: Express.Multer.File,
-    data: DeepPartial<Asset>,
-  ): Promise<Asset> {
+    data: DeepPartial<AssetEntity>,
+  ): Promise<AssetEntity> {
     const filename = file.filename;
     const url = `/uploads/${filename}`;
     return super.update(id, {
