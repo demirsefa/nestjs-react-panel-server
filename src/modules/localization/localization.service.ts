@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { Localization } from './entities/localization.entity';
 import { Translation } from './entities/Translation.entity';
 import { BaseService } from '../../providers/base.service';
@@ -94,5 +98,44 @@ export class LocalizationService extends BaseService<Localization> {
       }
     }
     return keys;
+  }
+
+  public override async create(
+    data: DeepPartial<Localization>,
+  ): Promise<Localization> {
+    if (data.translations?.[0]) {
+      data.translations[0].localizationId = dat a.id;
+    }
+    const idExists = await this.localizationRepository.findOne({
+      where: { id: data.id },
+      withDeleted: true,
+    });
+    if (idExists) {
+      throw new BadRequestException(
+        `Entity with id ${data.id} already exists. It might be deleted.`,
+      );
+    }
+    const entity = this.localizationRepository.create(data);
+
+    return this.localizationRepository.save(entity);
+  }
+
+  public override async update(
+    id: string | number,
+    data: DeepPartial<Localization>,
+  ): Promise<Localization> {
+    if (data.translations?.[0]) {
+      data.translations[0].localizationId = data.id;
+    }
+    const existingEntity = await this.findOne(id);
+    if (!existingEntity) {
+      throw new Error(`Entity with id ${id} not found`);
+    }
+
+    const updatedEntity = this.localizationRepository.merge(
+      existingEntity,
+      data,
+    );
+    return this.localizationRepository.save(updatedEntity); // Save merged entity
   }
 }
