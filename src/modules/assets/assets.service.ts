@@ -14,6 +14,17 @@ export class AssetsService extends BaseService<AssetEntity> {
     super(assetRepository);
   }
 
+  async findOne(id: number): Promise<AssetEntity | null> {
+    return this.assetRepository.findOne({
+      where: { id },
+      relations: {
+        localizationTitle: {
+          translations: true,
+        },
+      },
+    });
+  }
+
   async createAssets(
     file: Express.Multer.File,
     data: DeepPartial<AssetEntity>,

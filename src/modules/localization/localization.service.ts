@@ -1,8 +1,4 @@
-import {
-  BadGatewayException,
-  BadRequestException,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { Localization } from './entities/localization.entity';
@@ -104,7 +100,7 @@ export class LocalizationService extends BaseService<Localization> {
     data: DeepPartial<Localization>,
   ): Promise<Localization> {
     if (data.translations?.[0]) {
-      data.translations[0].localizationId = dat a.id;
+      data.translations[0].localizationId = data.id;
     }
     const idExists = await this.localizationRepository.findOne({
       where: { id: data.id },

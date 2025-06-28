@@ -8,6 +8,8 @@ import {
   Put,
   Param,
   Delete,
+  Get,
+  NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AssetsService } from './assets.service';
@@ -25,6 +27,15 @@ import * as fs from 'fs';
 export class AssetsController extends BaseController<AssetEntity> {
   constructor(private readonly assetsService: AssetsService) {
     super(assetsService);
+  }
+
+  @Get(':id')
+  async getOne(@Param('id') id: number): Promise<AssetEntity> {
+    const item = await this.assetsService.findOne(id);
+    if (item === null) {
+      throw new NotFoundException('Not Found');
+    }
+    return item;
   }
 
   @Post()
