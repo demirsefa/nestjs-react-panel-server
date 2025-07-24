@@ -13,7 +13,9 @@ export class LanguageController extends BaseController<LanguageEntity> {
   }
 
   @Post()
-  override async create(@Body() data: DeepPartial<LanguageEntity>): Promise<LanguageEntity> {
+  override async create(
+    @Body() data: DeepPartial<LanguageEntity>,
+  ): Promise<LanguageEntity> {
     return super.create(data);
   }
 
@@ -24,4 +26,4 @@ export class LanguageController extends BaseController<LanguageEntity> {
   ): Promise<LanguageEntity> {
     return super.update(id, data);
   }
-} 
+}
