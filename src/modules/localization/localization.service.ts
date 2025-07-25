@@ -81,14 +81,12 @@ export class LocalizationService extends BaseService<Localization> {
         });
         await this.translationRepository.save({
           ...updatedVersion,
-          clientVersion: updatedVersion.clientVersion,
         });
       } else {
         const res = this.translationRepository.create({
           text: key.text,
           language: key.language,
           localizationId: key.id,
-          clientVersion: 1,
         });
         await this.translationRepository.save(res);
       }
