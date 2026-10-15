@@ -37,8 +37,8 @@ export class AuthService {
     }
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
-      //throw new UnauthorizedException('Invalid credentials');
-      console.error('wrong password' + username);
+      console.error('wrong password');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     return admin;
